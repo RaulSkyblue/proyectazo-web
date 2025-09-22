@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Tests - Proyectazo</title>
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 3px;
+        }
+        .test-pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .test-fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .test-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Unit Tests - Login Validation</h1>
+        <div id="test-results"></div>
+        <div id="test-summary" class="test-summary"></div>
+    </div>
+
+    <script>
+        // Copy the validation functions from the main page
+        function validateUsername(username) {
+            if (!username || username.trim() === '') {
+                return {
+                    isValid: false,
+                    message: 'El usuario no puede estar vacío'
+                };
+            }
+            return {
+                isValid: true,
+                message: ''
+            };
+        }
+
+        function validatePassword(password) {
+            if (!password || password.trim() === '') {
+                return {
+                    isValid: false,
+                    message: 'La contraseña no puede estar vacía'
+                };
+            }
+            return {
+                isValid: true,
+                message: ''
+            };
+        }
+
+        // Test framework
+        let testResults = [];
+
+        function assert(condition, message) {
+            if (condition) {
+                testResults.push({ passed: true, message: message });
+                return true;
+            } else {
+                testResults.push({ passed: false, message: message });
+                return false;
+            }
+        }
+
+        function runTests() {
+            console.log('Running login validation tests...');
+            
+            // Test validateUsername function
+            
+            // Test case 1: Empty string
+            let result = validateUsername('');
+            assert(!result.isValid && result.message === 'El usuario no puede estar vacío', 
+                   'Test 1: Empty username should be invalid');
+            
+            // Test case 2: Null value
+            result = validateUsername(null);
+            assert(!result.isValid && result.message === 'El usuario no puede estar vacío', 
+                   'Test 2: Null username should be invalid');
+            
+            // Test case 3: Undefined value
+            result = validateUsername(undefined);
+            assert(!result.isValid && result.message === 'El usuario no puede estar vacío', 
+                   'Test 3: Undefined username should be invalid');
+            
+            // Test case 4: Whitespace only
+            result = validateUsername('   ');
+            assert(!result.isValid && result.message === 'El usuario no puede estar vacío', 
+                   'Test 4: Whitespace-only username should be invalid');
+            
+            // Test case 5: Valid username
+            result = validateUsername('testuser');
+            assert(result.isValid && result.message === '', 
+                   'Test 5: Valid username should be accepted');
+            
+            // Test case 6: Username with spaces (valid)
+            result = validateUsername('test user');
+            assert(result.isValid && result.message === '', 
+                   'Test 6: Username with spaces should be valid');
+            
+            // Test validatePassword function
+            
+            // Test case 7: Empty password
+            result = validatePassword('');
+            assert(!result.isValid && result.message === 'La contraseña no puede estar vacía', 
+                   'Test 7: Empty password should be invalid');
+            
+            // Test case 8: Null password
+            result = validatePassword(null);
+            assert(!result.isValid && result.message === 'La contraseña no puede estar vacía', 
+                   'Test 8: Null password should be invalid');
+            
+            // Test case 9: Undefined password
+            result = validatePassword(undefined);
+            assert(!result.isValid && result.message === 'La contraseña no puede estar vacía', 
+                   'Test 9: Undefined password should be invalid');
+            
+            // Test case 10: Whitespace only password
+            result = validatePassword('   ');
+            assert(!result.isValid && result.message === 'La contraseña no puede estar vacía', 
+                   'Test 10: Whitespace-only password should be invalid');
+            
+            // Test case 11: Valid password
+            result = validatePassword('mypassword');
+            assert(result.isValid && result.message === '', 
+                   'Test 11: Valid password should be accepted');
+            
+            displayResults();
+        }
+
+        function displayResults() {
+            const resultsDiv = document.getElementById('test-results');
+            const summaryDiv = document.getElementById('test-summary');
+            
+            let passedTests = 0;
+            let totalTests = testResults.length;
+            
+            resultsDiv.innerHTML = '';
+            
+            testResults.forEach((test, index) => {
+                const testDiv = document.createElement('div');
+                testDiv.className = `test-result ${test.passed ? 'test-pass' : 'test-fail'}`;
+                testDiv.textContent = `${test.passed ? '✓ PASS' : '✗ FAIL'}: ${test.message}`;
+                resultsDiv.appendChild(testDiv);
+                
+                if (test.passed) passedTests++;
+            });
+            
+            summaryDiv.innerHTML = `
+                <h3>Test Summary</h3>
+                <p><strong>Total Tests:</strong> ${totalTests}</p>
+                <p><strong>Passed:</strong> ${passedTests}</p>
+                <p><strong>Failed:</strong> ${totalTests - passedTests}</p>
+                <p><strong>Success Rate:</strong> ${((passedTests / totalTests) * 100).toFixed(1)}%</p>
+            `;
+            
+            console.log(`Tests completed: ${passedTests}/${totalTests} passed`);
+        }
+
+        // Run tests when page loads
+        window.onload = function() {
+            runTests();
+        };
+    </script>
+</body>
+</html>
